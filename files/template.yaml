@@ -1,0 +1,37 @@
+MySQLDatabase:
+  Type: "AWS::RDS::DBCluster"
+  Properties:
+    Engine: aurora
+    EngineMode: serverless
+    EngineVersion: "5.6.10a"
+    Port: 3306
+    DatabaseName: {{cluster.name}}
+    DBClusterIdentifier: {{cluster.name}}
+    DBClusterParameterGroupName: {{cluster.name}}
+    DBSubnetGroupName: {{cluster.name}}
+    MasterUsername: "{{cluster.masterUsername}}"
+    MasterUserPassword: "{{cluster.masterUserPassword}}"
+    EnableIAMDatabaseAuthentication: false
+    DeletionProtection: false
+    AvailabilityZones:
+      "Fn::Split": [",", {"Ref": AvailabilityZones}]
+    VpcSecurityGroupIds:
+      "Fn::Split": [",", {"Ref": SecurityGroups}]
+    BacktrackWindow: {{cluster.backtrackTTL}}
+    BackupRetentionPeriod: {{cluster.backupTTL}}
+    PreferredBackupWindow: {{cluster.backupWindow}}
+    PreferredMaintenanceWindow: {{cluster.maintenanceWindow}}
+    {{#if cluster.kmsKey}}
+    KmsKeyId: {{cluster.kmsKey}}
+    StorageEncrypted: true
+    {{/if}}
+    ScalingConfiguration:
+      AutoPause: true
+      MinCapacity: {{cluster.capacity.min}}
+      MaxCapacity: {{cluster.capacity.max}}
+      SecondsUntilAutoPause: 21600  # 6 Hours
+    Tags:
+      {{#each tags}}
+      - Key: {{Key}}
+        Value: {{Value}}
+      {{/each}}
