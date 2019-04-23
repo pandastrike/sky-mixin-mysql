@@ -1,6 +1,6 @@
 # Panda Sky Mixin: MySQL
 # This mixin allocates a serverless MySQL database within your deployment.
-import {cat, isObject} from "panda-parchment"
+import {cat, isObject, capitalize, camelCase, plainText} from "panda-parchment"
 import {keyLookup, secretLookup} from "./utils"
 
 process = (SDK, config) ->
@@ -17,8 +17,13 @@ process = (SDK, config) ->
 
   # Expand the "cluster" configuration with defaults.
   {cluster, tags} = c
-  unless cluster.name
-    cluster.name = config.environmentVariables.fullName
+  if cluster.name
+    cluster.id = cluster.name
+  else
+    cluster.id = config.environmentVariables.fullName
+
+  cluster.databaseName = capitalize camelCase plainText cluster.id
+  cluster.subnetName = config.environmentVariables.fullName
 
   await secretLookup SDK, cluster.password
   cluster.masterUsername =
@@ -28,9 +33,6 @@ process = (SDK, config) ->
 
   unless cluster.backupTTL
     cluster.backupTTL = 1
-
-  unless cluster.backtrackTTL
-    cluster.backtrackTTL = 1
 
   unless cluster.backupWindow
     cluster.backupWindow = "06:00-07:00" # 11pm - 12am PST

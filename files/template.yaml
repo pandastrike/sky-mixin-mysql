@@ -5,19 +5,16 @@ MySQLDatabase:
     EngineMode: serverless
     EngineVersion: "5.6.10a"
     Port: 3306
-    DatabaseName: {{cluster.name}}
-    DBClusterIdentifier: {{cluster.name}}
-    DBClusterParameterGroupName: {{cluster.name}}
-    DBSubnetGroupName: {{cluster.name}}
+    DatabaseName: {{cluster.databaseName}}
+    DBClusterIdentifier: {{cluster.id}}
     MasterUsername: "{{cluster.masterUsername}}"
     MasterUserPassword: "{{cluster.masterUserPassword}}"
-    EnableIAMDatabaseAuthentication: false
     DeletionProtection: false
+    DBSubnetGroupName: {{cluster.subnetName}}
     AvailabilityZones:
       "Fn::Split": [",", {"Ref": AvailabilityZones}]
     VpcSecurityGroupIds:
       "Fn::Split": [",", {"Ref": SecurityGroups}]
-    BacktrackWindow: {{cluster.backtrackTTL}}
     BackupRetentionPeriod: {{cluster.backupTTL}}
     PreferredBackupWindow: {{cluster.backupWindow}}
     PreferredMaintenanceWindow: {{cluster.maintenanceWindow}}

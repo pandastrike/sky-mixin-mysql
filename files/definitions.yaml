@@ -23,12 +23,6 @@ cluster:
       type: integer
       minimum: 1
 
-    backtrackTTL:
-      description: >
-        Optional specification of how long to hold onto database snapshots, given in days.  Defaults to 1 day. Backtracking "rewinds" the DB cluster to the time you specify. Backtracking is not a replacement for backing up your DB cluster but offers an additional, faster means of undoing database operations.
-      type: integer
-      minimum: 1
-
     backupWindow:
       description: >
         Optional specification of the window of time where a database backup can be made.  Given in UTC in the format hh:mm-hh:mm. Cannot overlap with maintenanceWindow. Defaults to "06:00-07:00", which is 11pm - 12am PST.
